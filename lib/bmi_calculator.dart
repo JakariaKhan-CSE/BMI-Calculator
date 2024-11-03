@@ -12,12 +12,14 @@ class _BmiCalculatorState extends State<BmiCalculator> {
   TextEditingController weightController = TextEditingController();
   int currentIndex = 0;
   String result = '';
+  double height = 0.0;
+  double weight = 0.0;
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'BMI Calculator',
             style: TextStyle(color: Colors.black),
           ),
@@ -26,7 +28,7 @@ class _BmiCalculatorState extends State<BmiCalculator> {
           actions: [
             IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.settings,
                   color: Colors.black,
                 ))
@@ -34,7 +36,7 @@ class _BmiCalculatorState extends State<BmiCalculator> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,10 +47,10 @@ class _BmiCalculatorState extends State<BmiCalculator> {
                     radioButton('Woman', Colors.teal, 1),
                   ],
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
 
-                Text('Your Height in Cm : ',style: TextStyle(fontSize: 18),),
-                SizedBox(height: 8,),
+                const Text('Your Height in Cm : ',style: TextStyle(fontSize: 18),),
+                const SizedBox(height: 8,),
                 TextField(
                   controller: heightController,
                   keyboardType: TextInputType.number,
@@ -63,10 +65,10 @@ class _BmiCalculatorState extends State<BmiCalculator> {
                     )
                   ),
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
 
-                Text('Your Weight in Kg : ',style: TextStyle(fontSize: 18),),
-                SizedBox(height: 8,),
+                const Text('Your Weight in Kg : ',style: TextStyle(fontSize: 18),),
+                const SizedBox(height: 8,),
                 TextField(
                   controller: weightController,
                   keyboardType: TextInputType.number,
@@ -82,20 +84,26 @@ class _BmiCalculatorState extends State<BmiCalculator> {
                   ),
                 ),
 
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 
-                Container(
+                SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.cyanAccent
                         ),
-                        onPressed: (){}, child: Text('Calculate',style: TextStyle(color: Colors.black),))),
+                        onPressed: (){
+                          height = double.parse(heightController.text);
+                          weight = double.parse(weightController.text);
+                          calculateBmi(height, weight);
+                          heightController.clear();
+                          weightController.clear();
+                        }, child: const Text('Calculate',style: TextStyle(color: Colors.black),))),
 
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
 
-                Container(
+                const SizedBox(
                   width: double.infinity,
                   child: Text('Your BMI is : ',textAlign: TextAlign.center,style: TextStyle(
                     fontSize: 24,
@@ -103,10 +111,10 @@ class _BmiCalculatorState extends State<BmiCalculator> {
                   ),),
                 ),
 
-                SizedBox(height: 50,),
-                Container(
+                const SizedBox(height: 50,),
+                SizedBox(
                   width: double.infinity,
-                  child: Text('',textAlign: TextAlign.center,style: TextStyle(
+                  child: Text(result,textAlign: TextAlign.center,style: const TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold
                   ),),
@@ -120,10 +128,12 @@ class _BmiCalculatorState extends State<BmiCalculator> {
     );
   }
 
-  String calculateBmi(double height, double weight){
-    double result = weight / (height*height);
-    String bmi = result.toStringAsFixed(2); // very useful
-    return bmi;
+  void calculateBmi(double height, double weight){
+    double res = (weight / (height*height/10000));  // covert cm to meter otherwise get 0.0 result
+    String bmi = res.toStringAsFixed(2); // very useful
+    setState(() {
+      result = bmi;
+    });
   }
 
   void changeIndex(int index) {
@@ -136,7 +146,7 @@ class _BmiCalculatorState extends State<BmiCalculator> {
     return Expanded(
         child: Container(
           height: 80,
-      margin: EdgeInsets.symmetric(horizontal: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor:
